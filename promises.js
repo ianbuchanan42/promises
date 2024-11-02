@@ -9,7 +9,7 @@ function greet(name) {
 
 greet('Steve');
 
-////////// Promise chaining using then, catch, finally
+//////// Promise chaining using then, catch, finally
 
 // console.log('start');
 // fetch('https://anapioficeandfire.com/api/characters/583')
@@ -90,7 +90,7 @@ const promise3 = new Promise((resolve, reject) => {
 });
 
 // switch error to true to see what happens with reject
-const error = true;
+const error = false;
 
 const promise4 = new Promise((resolve, reject) => {
   if (error) {
@@ -101,6 +101,32 @@ const promise4 = new Promise((resolve, reject) => {
 
 Promise.all([promise1, promise2, promise3, promise4])
   .then((data) => console.log(data))
-  .catch((error) => {
-    console.log(error);
-  });
+  .catch((e) => console.log(e));
+
+//   Advanced mistake #5: promises fall through
+// Finally, this is the mistake I alluded to when I introduced the promise puzzle above. This is a very esoteric use case, and it may never come up in your code, but it certainly surprised me.
+
+// What do you think this code prints out?
+
+// Promise.resolve('foo').then(Promise.resolve('bar')).then(function (result) {
+//   console.log(result);
+// });
+// If you think it prints out bar, you're mistaken. It actually prints out foo!
+
+// The reason this happens is because when you pass then() a non-function (such as a promise), it actually interprets it as then(null), which causes the previous promise's result to fall through. You can test this yourself:
+
+// Promise.resolve('foo').then(null).then(function (result) {
+//   console.log(result);
+// });
+// Add as many then(null)s as you want; it will still print foo.
+
+// This actually circles back to the previous point I made about promises vs promise factories. In short, you can pass a promise directly into a then() method, but it won't do what you think it's doing. then() is supposed to take a function, so most likely you meant to do:
+
+// Promise.resolve('foo').then(function () {
+//   return Promise.resolve('bar');
+// }).then(function (result) {
+//   console.log(result);
+// });
+// This will print bar, as we expected.
+
+// So just remind yourself: always pass a function into then()!
