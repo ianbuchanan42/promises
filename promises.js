@@ -130,3 +130,21 @@ Promise.all([promise1, promise2, promise3, promise4])
 // This will print bar, as we expected.
 
 // So just remind yourself: always pass a function into then()!
+
+// CACHED promise values
+
+// export type PFunc = (url: string) => Promise<unknown>;
+
+// export const cachePromiseFunction = (get: PFunc): PFunc => {
+//   const cache = {};
+//   return (url: string) => {
+//     if (cache[url]) {
+//       return Promise.resolve(cache[url]);
+//     }
+//     cache[url] = new Promise((resolve) => {
+//       const result = get(url);
+//       resolve(result);
+//     });
+//     return cache[url];
+//   };
+// };
